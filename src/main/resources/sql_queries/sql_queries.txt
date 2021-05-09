@@ -1,0 +1,25 @@
+TABLE_CAT	TABLE_SCHEM	TABLE_NAME	COLUMN_NAME	DATA_TYPE	TYPE_NAME	COLUMN_SIZE	BUFFER_LENGTH	DECIMAL_DIGITS	NUM_PREC_RADIX	NULLABLE	REMARKS	COLUMN_DEF	SQL_DATA_TYPE	SQL_DATETIME_SUB	CHAR_OCTET_LENGTH	ORDINAL_POSITION	IS_NULLABLE	SCOPE_CATALOG	SCOPE_SCHEMA	SCOPE_TABLE	SOURCE_DATA_TYPE	IS_AUTOINCREMENT	IS_GENERATEDCOLUMN
+"test_database_r"	(null)	"employees"	"FirstName"	12	"VARCHAR"	100	65535	(null)	10	1	""	(null)	0	0	100	1	"YES"	(null)	(null)	(null)	(null)	"NO"	"NO"
+"test_database_r"	(null)	"employees"	"LastName"	12	"VARCHAR"	100	65535	(null)	10	1	""	(null)	0	0	100	2	"YES"	(null)	(null)	(null)	(null)	"NO"	"NO"
+"test_database_r"	(null)	"employees"	"DOB"	91	"DATE"	10	65535	(null)	10	1	""	(null)	0	0	(null)	3	"YES"	(null)	(null)	(null)	(null)	"NO"	"NO"
+"test_database_r"	(null)	"employees"	"Gender"	1	"CHAR"	1	65535	(null)	10	1	""	(null)	0	0	1	4	"YES"	(null)	(null)	(null)	(null)	"NO"	"NO"
+"test_database_r"	(null)	"employees"	"Title"	12	"VARCHAR"	100	65535	(null)	10	1	""	(null)	0	0	100	5	"YES"	(null)	(null)	(null)	(null)	"NO"	"NO"
+"test_database_r"	(null)	"employees"	"Address"	-1	"MEDIUMTEXT"	16777215	65535	(null)	10	1	""	(null)	0	0	16777215	6	"YES"	(null)	(null)	(null)	(null)	"NO"	"NO"
+"test_database_r"	(null)	"employees"	"Id"	12	"VARCHAR"	100	65535	(null)	10	1	""	(null)	0	0	100	7	"YES"	(null)	(null)	(null)	(null)	"NO"	"NO"
+
+
+
+
+
+
+
+insert into employees values('rukhsar1','praveen','1995-02-03','F','TCS','[{"type ": "home", "number": 1234, "street": "blah blah St", "Unit": "1 a", "City": "Somewhere", "State": "WV", "zipcode": "12345" }]');
+ALTER TABLE employess rename to employees;
+select * from employees;
+ALTER TABLE employees Add COLUMN  Id varchar(100) CHARACTER SET utf8;
+delete from employees;
+
+UPDATE employees SET FirstName = 'rukhsar', LastName= 'Patel';
+desc employees;
+
+create table employess (FirstName varchar(100),LastName varchar(100),DOB date,Gender char,Title varchar(100),Address blob);

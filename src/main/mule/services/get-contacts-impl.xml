@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd 
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	
+		<sub-flow name="get-contacts-imp" doc:id="51e1e575-ebd2-4592-aeec-673a18678884" >
+		<flow-ref doc:name="Flow Reference to common-start-logger" doc:id="60278692-d956-4c73-a712-cc927838b7f8" name="common-start-logger"/>
+		<choice doc:name="Query Param Check" doc:id="c9fa2cdd-fa26-4f19-8dc1-d5392d147680" >
+			<when expression="#[attributes.queryParams.id !=null]">
+				<db:select doc:name="Fetching Based on ID" doc:id="d55ef415-26f3-475c-b7e7-044c2d5538b6" config-ref="Database_Config">
+			<db:sql><![CDATA[select * from employees where id=:id;]]></db:sql>
+					<db:input-parameters ><![CDATA[#[id:attributes.queryParams.id]]]></db:input-parameters>
+		
+</db:select>
+			</when>
+			<otherwise >
+		<db:select doc:name="Fetching All Records" doc:id="d55ef415-26f3-475c-b7e7-044c2d5538b6" config-ref="Database_Config">
+			<db:sql><![CDATA[select * from employees;]]></db:sql>
+		
+</db:select>
+			</otherwise>
+		</choice>
+		<ee:transform doc:name="Converting to JSON" doc:id="4dc7ead7-d7ee-4020-9dc3-dfc2b552b042" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+
+---
+if (sizeOf(payload)!=0)
+payload   map {
+Identification : {
+	id: $.id default ""	,
+	FirstName: $.FirstName default "",
+	LastName: $.LastName default "",
+	DOB : $.DOB default "",
+	Gender: $.Gender default "",
+	Title: $.Title default ""
+}	,
+Address: if ($.address !=null and sizeOf($.address)>0) read($.address,'application/json') else []
+
+}
+else  {
+    "status":  "SUCCESS",
+    "responseDescription": "No data found"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<flow-ref doc:name="Flow Reference to common-end-logger" doc:id="4a3c5e06-4546-45b4-837e-7f3614393bb7" name="common-end-logger"/>
+	
+</sub-flow>
+	
+</mule>

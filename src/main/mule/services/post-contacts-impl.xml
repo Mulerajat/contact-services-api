@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd 
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	<sub-flow name="post-contact-imp" doc:id="0b636377-0e1e-43a7-9d4e-90289685e945" >
+		<flow-ref doc:name="Flow Reference to common-start-logger" doc:id="e1a518f6-82ac-4153-b9a3-ea9ae29af88d" name="common-start-logger"/>
+		<ee:transform doc:name="Bulk Insert Payload" doc:id="9465aaed-9b51-42fe-a830-f03b1c9db21e">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+var aa= flatten([payload])
+---
+(aa map (item,index) -> 
+   employees:{
+   		id:  vars.correlationId,
+		firstname: item.Identification.FirstName default "",
+		lastname: item.Identification.LastName default "",
+		dob: item.Identification.DOB  as Date {format : "MM/dd/yyy"}  as String {format: "yyyy-MM-dd"} default "",
+		gender: item.Identification.Gender default "",
+		title: item.Identification.Title default "",
+		address: write((item.Address map $ )[0], 'application/json')
+}).*employees
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<db:bulk-insert doc:name="Bulk insert" doc:id="c86e9c2b-1643-4fa2-951b-5fc91091295b" config-ref="Database_Config">
+			<db:sql><![CDATA[insert into employees values(:firstname,:lastname,:dob,:gender,:title,:address,:id);]]></db:sql>
+		</db:bulk-insert>
+		<ee:transform doc:name="Final Payload" doc:id="39c9c1a7-7fcf-433c-9d05-42bd9f68cf94" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{   
+     "id": vars.correlationId,
+    "status":  "SUCCESS",
+    "responseDescription": "Contact Records Created"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<flow-ref doc:name="Flow Reference to common-end-logger" doc:id="62dbfd9e-cbe1-4ccb-973b-5a9fada8a66c" name="common-end-logger"/>
+	
+</sub-flow>
+</mule>

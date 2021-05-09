@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd 
+http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd 
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	 
+	
+	
+	<sub-flow name="update-contact-imp" doc:id="8c403d37-cf1b-4c95-a9ad-2ff091e3925a" >
+		<flow-ref doc:name="Flow Reference to common-start-logger" doc:id="23d3a0cf-127b-4d21-b58e-b52376d7c595" name="common-start-logger"/>
+		<ee:transform doc:name="Update Transform Message" doc:id="050e178a-b9b9-48ba-8742-11496238aef6" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+var aa= flatten([payload])
+---
+(aa map (item,index) -> 
+   employees:{
+   		id: item.Identification.id default "",
+		firstname: item.Identification.FirstName default "",
+		lastname: item.Identification.LastName default "",
+		dob: item.Identification.DOB  as Date {format : "MM/dd/yyy"}  as String {format: "yyyy-MM-dd"} default "",
+		gender: item.Identification.Gender default "",
+		title: item.Identification.Title default "",
+		address:if (item.Address !=null) write((item.Address map $ )[0], 'application/json') else ""
+}).*employees
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<db:bulk-update doc:name="Bulk update" doc:id="186a85c6-74ce-4a84-b288-572911243dbe" config-ref="Database_Config">
+					<db:sql><![CDATA[update  employees 
+set firstname=:firstname,lastname=:lastname,dob=:dob,gender=:gender,title=:title,address=:address,id=:id]]></db:sql>
+				</db:bulk-update>
+		<ee:transform doc:name="Final Payload" doc:id="092797ee-e983-4cef-a3f2-3bd912532007" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+    "status":  "SUCCESS",
+    "responseDescription": "Contact Records Updated"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<flow-ref doc:name="Flow Reference to common-end-logger" doc:id="79923c92-edb5-4be3-80dd-7b404a99719d" name="common-end-logger"/>
+	</sub-flow>
+    
+</mule>

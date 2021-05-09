@@ -1,0 +1,63 @@
+{
+	"info": {
+		"_postman_id": "9f673eda-1f78-4af7-a37a-33150c2bb5ba",
+		"name": "contact-api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "get-contact",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8081/api/contact"
+			},
+			"response": []
+		},
+		{
+			"name": "get-contact by Id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8081/api/contact"
+			},
+			"response": []
+		},
+		{
+			"name": "post-contact",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[{\r\n    \"Identification\": {\r\n        \"FirstName\": \"Bob Marley\",\r\n        \"LastName\": \"Frederick\",\r\n        \"DOB\": \"1980-06-21\",\r\n        \"Gender\": \"M\",\r\n        \"Title\": \"Manager\"\r\n    },\r\n    \"Address\": [\r\n        {\r\n            \"type \": \"home\",\r\n            \"number\": 1234,\r\n            \"street\": \"blah blah St\",\r\n            \"Unit\": \"1 a\",\r\n            \"City\": \"Somewhere\",\r\n            \"State\": \"WV\",\r\n            \"zipcode\": \"12345\"\r\n        }\r\n    ]\r\n},\r\n{\r\n    \"Identification\": {\r\n        \"FirstName\": \"Bob the Builder\",\r\n        \"LastName\": \"Frederick\",\r\n        \"DOB\": \"1980-06-21\",\r\n        \"Gender\": \"M\",\r\n        \"Title\": \"Manager\"\r\n    },\r\n    \"Address\": [\r\n        {\r\n            \"type \": \"home\",\r\n            \"number\": 1234,\r\n            \"street\": \"blah blah St\",\r\n            \"Unit\": \"1 a\",\r\n            \"City\": \"Somewhere\",\r\n            \"State\": \"WV\",\r\n            \"zipcode\": \"12345\"\r\n        }\r\n    ]\r\n}]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8081/api/contact"
+			},
+			"response": []
+		},
+		{
+			"name": "update-contact",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Identification\": {\r\n        \"FirstName\": \"Bob the builder2 bob\",\r\n        \"LastName\": \"Frederick\",\r\n        \"DOB\": \"1980-06-21\",\r\n        \"Gender\": \"M\",\r\n        \"Title\": \"Manager\"\r\n    },\r\n    \"Address\": [\r\n        {\r\n            \"type \": \"sweetesthome\",\r\n            \"number\": 1234,\r\n            \"street\": \"blah blah St\",\r\n            \"Unit\": \"1 a\",\r\n            \"City\": \"Somewhere\",\r\n            \"State\": \"WV\",\r\n            \"zipcode\": \"12345\"\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8081/api/contact"
+			},
+			"response": []
+		}
+	]
+}

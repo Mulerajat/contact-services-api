@@ -1,0 +1,44 @@
+#%RAML 1.0
+title: contact-api
+
+/contact:
+  get:
+    description:  To Fetch the contact details from the Database
+    queryParameters:
+      id:
+       type: string
+       required: false
+    responses:
+      200:
+        body:
+          application/json:
+            example: !include examples/contact_data.json
+          
+      
+  post:
+    description: To create new contact detail
+    body:
+          application/json:
+            type: !include  schemas/contact-dataType.raml
+            example: !include examples/contact_data.json
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+              {"status": "successfully created"}
+
+  put:
+    body:
+          application/json:
+            type: !include  schemas/contact-dataType.raml
+            example: !include examples/contact_data.json
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+              {"status": "updated successfully "}
+
+      
+    

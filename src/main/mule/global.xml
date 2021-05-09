@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd 
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
+http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd">
+
+    <apikit:config name="contact-api-config" api="contact-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+	<http:listener-config name="contact-api-httpListenerConfig">
+        <http:listener-connection host="0.0.0.0" port="8081" />
+    </http:listener-config>
+    <db:config name="Database_Config" doc:name="Database Config" doc:id="6205569f-75f1-45c0-b3a2-d25d6319ca1b">
+        <db:my-sql-connection host="#[p('secure::sql.host')]" port="#[p('secure::sql.port')]" user="#[p('secure::sql.user')]" password="${secure::sql.password}" database="#[p('secure::sql.database')]" />
+    </db:config>
+	<secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="76463628-73c7-4aaa-9856-c433b17d63f8" file="config/config-${mule.env}.properties" key="${key}">
+	</secure-properties:config>
+	<global-property doc:name="Global Property" doc:id="5bfd7aa0-6d6d-4498-9715-3865c19c7dbb" name="mule.env" value="dev" />
+	<configuration-properties doc:name="Configuration properties" doc:id="65dfe7b0-9c74-4ed1-aa81-3985080884b6" file="config\common.properties" />
+	<global-property doc:name="Global Property" doc:id="b1ff2afe-3b3b-4033-9b74-f38e276ed20e" name="key" value="1234567890123456" />
+
+</mule>

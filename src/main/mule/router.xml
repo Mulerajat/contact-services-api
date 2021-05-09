@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd 
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+    <flow name="contact-api-main">
+        <http:listener config-ref="contact-api-httpListenerConfig" path="/api/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+          <ee:transform doc:name="ExtractingValues" doc:id="d1039d65-9270-462d-a120-8e2b13efa5fd" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="requestPath" ><![CDATA[%dw 2.0
+output application/java
+---
+attributes.requestPath]]></ee:set-variable>
+				<ee:set-variable variableName="flowName" ><![CDATA[%dw 2.0
+output application/java
+---
+flow.name]]></ee:set-variable>
+				<ee:set-variable variableName="correlationId" ><![CDATA[%dw 2.0
+output application/java
+---
+if (attributes.headers.correlationId != null) attributes.headers.correlationId else correlationId]]></ee:set-variable>
+				<ee:set-variable variableName="queryParams" ><![CDATA[%dw 2.0
+output application/java
+---
+attributes.queryParams default {}]]></ee:set-variable>
+				<ee:set-variable variableName="originalPayload" ><![CDATA[%dw 2.0
+output application/json
+---
+payload default {}]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+        <apikit:router config-ref="contact-api-config"/>
+		<error-handler ref="generic-global-error-handler-REST" />
+        
+    </flow>
+    <flow name="put:\contact:application\json:contact-api-config">
+    <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="Setting FLow Properties">
+            <ee:message />
+            <ee:variables>
+                <ee:set-variable variableName="flowName"><![CDATA[%dw 2.0
+output application/java
+---
+flow.name]]></ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+		<flow-ref doc:name="update-contact-imp" doc:id="f216907c-61e0-4a6d-8ebd-8b329bd6304f" name="update-contact-imp"/>
+    </flow>
+    <flow name="get:\contact:contact-api-config">
+    <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="Setting FLow Properties">
+            <ee:message />
+            <ee:variables>
+                <ee:set-variable variableName="flowName"><![CDATA[%dw 2.0
+output application/java
+---
+flow.name]]></ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <flow-ref doc:name="get-contacts-imp" doc:id="a613f77c-55e6-4130-a14d-eb6530f54855" name="get-contacts-imp"/>
+    </flow>
+    <flow name="post:\contact:application\json:contact-api-config">
+    <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="Setting FLow Properties">
+            <ee:message />
+            <ee:variables>
+                <ee:set-variable variableName="flowName"><![CDATA[%dw 2.0
+output application/java
+---
+flow.name]]></ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+		<flow-ref doc:name="post-contact-imp" doc:id="62ccaa5b-a608-4b0f-84fb-30315d676823" name="post-contact-imp" />
+    </flow>
+</mule>
