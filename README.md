@@ -2,10 +2,15 @@
 
 **Description: **
 This API has three methods GET,POST,PUT
-GET : It is used to fetcht the data from the datababase This can be done in two ways by passing id as query param to fetch a particular record or passing nothing to fetch all records
+
+GET : It is used to fetch the data from the database 
+This can be done in two ways by passing id as query param to fetch a particular record or passing nothing to fetch all records
+
 POST: It is used to create a new record in databse
+
 PUT It is used to update the records
-** NOTE** : The key and ENV has been setup inside which can be externalised while deploying to cloudhub and can be secured using mule-artifact json POSTMAN collection is avaible inside project under postman package  please import that collection and test
+
+**NOTE** : The key and ENV has been setup inside which can be externalised while deploying to cloudhub and can be secured using mule-artifact json POSTMAN collection is avaible inside project under postman package  please import that collection and test
 SQL queries and table structure also present under project
 
 Steps:
